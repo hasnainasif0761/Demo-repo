@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceConnect Pro</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .app-header {
+      margin-bottom: 30px;
+    }
+
+    .app-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 8px;
+    }
+
+    .app-subtitle {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    .user-section {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .user-id-label {
+      font-size: 12px;
+      color: #718096;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .user-id {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2d3748;
+      background: #edf2f7;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px dashed #cbd5e0;
+    }
+
+    .call-section {
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fff;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-field::placeholder {
+      color: #a0aec0;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover:before {
+      left: 100%;
+    }
+
+    .btn-call {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+    }
+
+    .btn-call:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(72, 187, 120, 0.3);
+    }
+
+    .btn-answer {
+      background: linear-gradient(135deg, #4299e1, #3182ce);
+      color: white;
+    }
+
+    .btn-answer:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(66, 153, 225, 0.3);
+    }
+
+    .btn-end {
+      background: linear-gradient(135deg, #f56565, #e53e3e);
+      color: white;
+    }
+
+    .btn-end:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(245, 101, 101, 0.3);
+    }
+
+    .call-status {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 25px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .call-timer-label {
+      font-size: 12px;
+      color: #718096;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .call-timer {
+      font-size: 32px;
+      font-weight: 700;
+      color: #48bb78;
+      font-family: 'Courier New', monospace;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #48bb78;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      color: #718096;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        min-width: auto;
+      }
+    }
+
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-header">
+      <h1 class="app-title">
+        <i class="fas fa-phone-alt"></i>
+        VoiceConnect Pro
+      </h1>
+      <p class="app-subtitle">Professional Voice Calling Solution</p>
+    </div>
+
+    <div class="user-section">
+      <div class="user-id-label">Your ID</div>
+      <div class="user-id" id="my-id">Connecting...</div>
+    </div>
+
+    <div class="call-section">
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="friend-id" 
+          class="input-field"
+          placeholder="Enter recipient's ID to start calling"
+        />
+      </div>
+
+      <div class="button-group">
+        <button id="callBtn" class="btn btn-call">
+          <i class="fas fa-phone"></i>
+          Call
+        </button>
+        <button id="answerBtn" class="btn btn-answer">
+          <i class="fas fa-phone-volume"></i>
+          Answer
+        </button>
+        <button id="endCallBtn" class="btn btn-end">
+          <i class="fas fa-phone-slash"></i>
+          End Call
+        </button>
+      </div>
+    </div>
+
+    <div class="call-status">
+      <div class="call-timer-label">
+        <span class="status-indicator"></span>
+        Call Duration
+      </div>
+      <div class="call-timer" id="call-timer">00:00:00</div>
+    </div>
+
+    <div class="footer">
+      <i class="fas fa-shield-alt"></i>
+      Secure P2P Voice Communication
+    </div>
+  </div>
+
+  <!-- PeerJS Library -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script>
+    let currentCall = null;
+    let timerInterval = null;
+    let seconds = 0;
+
+    // Generate a short custom ID like "user_45678"
+    const shortId = 'user_' + Math.floor(Math.random() * 100000);
+
+    // Create PeerJS connection with custom ID
+    const peer = new Peer(shortId);
+
+    peer.on('open', (id) => {
+      document.getElementById('my-id').textContent = id;
+    });
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        seconds++;
+        const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById("call-timer").textContent = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      seconds = 0;
+      document.getElementById("call-timer").textContent = "00:00:00";
+    }
+
+    // Receive incoming call
+    peer.on('call', (call) => {
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then(stream => {
+          call.answer(stream);
+          currentCall = call;
+
+          call.on('stream', remoteStream => {
+            const audio = new Audio();
+            audio.srcObject = remoteStream;
+            audio.play();
+            startTimer();
+          });
+
+          call.on('close', () => {
+            stopTimer();
+            alert("Call ended.");
+          });
+        });
+    });
+
+    // Make outgoing call
+    document.getElementById('callBtn').addEventListener('click', () => {
+      const friendId = document.getElementById('friend-id').value;
+      if (!friendId) return alert("Enter a friend's ID");
+
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then(stream => {
+          const call = peer.call(friendId, stream);
+          currentCall = call;
+
+          call.on('stream', remoteStream => {
+            const audio = new Audio();
+            audio.srcObject = remoteStream;
+            audio.play();
+            startTimer();
+          });
+
+          call.on('close', () => {
+            stopTimer();
+            alert("Call ended.");
+          });
+        });
+    });
+
+    // End call manually
+    document.getElementById('endCallBtn').addEventListener('click', () => {
+      if (currentCall) {
+        currentCall.close();
+        stopTimer();
+        currentCall = null;
+        alert("You ended the call.");
+      } else {
+        alert("No active call to end.");
+      }
+    });
+  </script>
+</body>
+</html>
